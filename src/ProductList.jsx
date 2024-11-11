@@ -289,7 +289,11 @@ const handlePlantsClick = (e) => {
                             <div className="product-card" key={i}>
                                 <img className="product-image" src={item.image} alt={item.name} />
                                 <div className="product-title">{item.name}</div>
-                                <button  className="product-button" onClick={() => handleAddToCart(item)}>Add to Cart</button>
+                                <button  disabled={cartItems.find(i => i.name == item.name)} className="product-button" onClick={() => handleAddToCart(item)} 
+                                      style={{
+                                        backgroundColor: cartItems.find(i => i.name === item.name) ? '#d3d3d3' : '',
+                                        cursor: cartItems.find(i => i.name === item.name) ? 'not-allowed' : 'pointer',
+                                      }}>Add to Cart</button>
                             </div>
                         ))}
 
