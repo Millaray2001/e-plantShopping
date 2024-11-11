@@ -6,40 +6,47 @@ import './CartItem.css';
 const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
-
+  var pattern = /[\^*@!"#$%&/()=?¡!¿'\\]/gi;
+ 
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
-    const total = 0; 
-    
+    const total = cart.reduce((acc, item) => {acc += parseInt(item.cost.replace(pattern, '')) * parseInt(item.quantity); return acc;}, 0);
+    //console.log('Total Amount:', total);
     return total; 
   };
 
   const handleContinueShopping = (e) => {
-   
+    e.preventDefault();
+    onContinueShopping(e);
   };
   const handleCheckoutShopping = (e) => {
     alert('Functionality to be added for future reference');
   };
 
   const handleIncrement = (item) => {
-    item.quantity += 1;
-    dispatch(updateQuantity(item));
+    const updatedItem = { ...item, quantity: item.quantity + 1 };
+    dispatch(updateQuantity(updatedItem));
   };
 
   const handleDecrement = (item) => {
-    item.quantity -= 1;
-    if(item.quantity <= 0){
-    dispatch(removeItem(item));
-    }else{
-    dispatch(updateQuantity(item));}
-  };
+      const updatedItem = { ...item, quantity: item.quantity - 1 };
+      if(updatedItem.quantity <= 0){
+        dispatch(removeItem(updatedItem));
+      } else {
+        dispatch(updateQuantity(updatedItem));
+      }
+    };
 
   const handleRemove = (item) => {
-    dispatch(removeItem(item));
+    const updatedItem = { ...item, quantity: item.quantity - 1 };
+    dispatch(removeItem(updatedItem));
   };
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
+    const exists = cart.filter(cartItem => cartItem.name === item.name)
+    const subtotal = exists.reduce((acc, item) => {acc += parseInt(item.cost.replace(pattern, '')) * parseInt(item.quantity); return acc;}, 0);
+    return subtotal;
   };
 
   return (
